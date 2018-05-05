@@ -5,6 +5,8 @@ import com.geolocation.mongodb.user.User;
 import com.geolocation.mongodb.user.repository.UserRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +36,9 @@ class UserInterceptor implements HandlerInterceptor{
             CompletableFuture<User> future =
                     userRepository.asyncSave(u);
         }
+        RequestContextHolder.currentRequestAttributes()
+                .setAttribute("location",u.getLocation(), RequestAttributes.SCOPE_REQUEST);
+
         return true;
     }
 

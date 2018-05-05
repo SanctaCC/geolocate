@@ -10,6 +10,8 @@ import org.springframework.data.geo.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.stream.Stream;
@@ -28,6 +30,12 @@ public class UserController {
     public UserController(UserRepository userRepository ,LocationProvider lp) {
         this.userRepository = userRepository;
         this.lp = lp;
+    }
+
+    private Point getCurrentPoint() {
+        Point point= (Point) RequestContextHolder.getRequestAttributes()
+                        .getAttribute("location", RequestAttributes.SCOPE_REQUEST);
+        return point;
     }
 
 //    @PostMapping("/users")
@@ -49,7 +57,7 @@ public class UserController {
 
     @GetMapping("/geo/users")
     public ResponseEntity<GeoPage<User>> getPaged(Pageable pageable){
-        return ResponseEntity.ok(userRepository.findAllByLocationNear(new Point(30,10.10),
+        return ResponseEntity.ok(userRepository.findAllByLocationNear(getCurrentPoint(),
                 new Distance(20000,Metrics.KILOMETERS),pageable));
     }
 
@@ -70,13 +78,13 @@ public class UserController {
 
     @GetMapping("/users/nearest")
     public ResponseEntity<GeoResults<User>> getNearG(){
-        GeoResults<User> gUser = userRepository.findTop20ByLocationNear(new Point(30,10.10),
+        GeoResults<User> gUser = userRepository.findTop20ByLocationNear(getCurrentPoint(),
                 new Distance(20000,Metrics.KILOMETERS));
         return ResponseEntity.ok(gUser);
     }
 
     @GetMapping("test")
-    public Point test(HttpServletRequest req){
+    public Point test(HttpServletRequest req/*,@RequestAttribute("location") Point point*/ ){
         boolean prod=
         Stream.of(env.getActiveProfiles()).filter(p-> "prod".equals(p)).findAny().isPresent();
         if(prod) return lp.getOne(req.getRemoteAddr());
