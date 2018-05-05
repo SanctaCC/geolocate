@@ -1,27 +1,37 @@
 package com.geolocation.mongodb.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.geo.Point;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Date;
 
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Document
+@ToString
 @EqualsAndHashCode
 public class User {
-    @Id
-    private String id;
+
+    public User(String ip){
+        this.ipAddress = ip;
+    }
 
     private String name;
-
+    @Id
+    @JsonProperty(value="id")
     private String ipAddress;
-
+    @GeoSpatialIndexed(type= GeoSpatialIndexType.GEO_2DSPHERE)
     private Point location;
+
+    @LastModifiedDate
+    private Date editedDate;
 
 }

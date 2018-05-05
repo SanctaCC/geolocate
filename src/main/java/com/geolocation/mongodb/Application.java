@@ -1,29 +1,58 @@
 package com.geolocation.mongodb;
 
-import com.geolocation.mongodb.user.User;
-import com.geolocation.mongodb.user.UserRepository;
+import com.geolocation.mongodb.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.geo.Point;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 @SpringBootApplication
+@EnableMongoAuditing
+@EnableFeignClients
+@EnableAsync
 public class Application implements CommandLineRunner {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
+	    String os = System.getProperty("os.name").toUpperCase();
+	    new SpringApplicationBuilder(Application.class)
+                .profiles((os.contains("win".toUpperCase())? "dev":"prod")).build().run(args);
+//	    SpringApplication.run(Application.class, args);
 	}
 
 	@Autowired
 	private UserRepository userRepository;
 
+	@Bean
+    public ThreadPoolTaskExecutor executorPool(){
+	    ThreadPoolTaskExecutor tpte = new ThreadPoolTaskExecutor();
+	    tpte.setCorePoolSize(2);
+	    tpte.setMaxPoolSize(10);
+	    return tpte;
+    }
 
 	public void run(String... args) {
-//		repository.deleteAll();
-		User hubert = new User();
-		hubert.setName("hubert");
+	    //db init
+////		repository.deleteAll();
+//        for (int i = 1; i < 255; i++) {
+//		User hubert = new User();
+//		hubert.setIpAddress("94.254.181." + i);
+//		hubert.setName("hubert");
+//		Random r = new Random();
 
-		userRepository.save(hubert);
+//		hubert.setLocation(new Point(ThreadLocalRandom.current().nextDouble(-180, 180),
+//              ThreadLocalRandom.current().nextDouble(-90, 90));
+//            		userRepository.save(hubert);
+//        }
+//
 
 	}
 }
