@@ -27,7 +27,8 @@ class UserInterceptor implements HandlerInterceptor{
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String ip = request.getRemoteAddr();
+//        String ip = request.getRemoteAddr();
+        String ip = "8.8.8.8";
         User u = userRepository.findByIpAddress(ip).orElseGet(()->new User(ip));
         if(u.getLocation()==null) {
             u.setLocation(lp.getOne(ip));

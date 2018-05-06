@@ -15,6 +15,6 @@ class UserConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(userInterceptor);
+        registry.addInterceptor(userInterceptor).excludePathPatterns("/error");
     }
 }

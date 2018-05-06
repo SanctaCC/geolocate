@@ -2,11 +2,15 @@ package com.geolocation.mongodb.user;
 
 import com.geolocation.mongodb.location.LocationProvider;
 import com.geolocation.mongodb.user.repository.UserRepository;
+import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.geo.*;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,18 +55,20 @@ public class UserController {
 //    }
 
     @GetMapping("/users")
-    public ResponseEntity<Page<User>> get(Pageable pageable){
-        return new ResponseEntity<>(userRepository.findAllByOrderByEditedDateDesc(pageable), HttpStatus.OK);
+    public ResponseEntity<Page<User>> get(@QuerydslPredicate(root = User.class) Predicate predicate,
+                                          @PageableDefault(sort={"date"},direction = Sort.Direction.DESC) Pageable pageable,
+                                          @ModelAttribute User user){
+        return new ResponseEntity<>(userRepository.findAll(predicate,pageable), HttpStatus.OK);
     }
 
     @GetMapping("/geo/users")
-    public ResponseEntity<GeoPage<User>> getPaged(Pageable pageable){
+    public ResponseEntity<GeoPage<User>> getPaged( Pageable pageable){
         return ResponseEntity.ok(userRepository.findAllByLocationNear(getCurrentPoint(),
                 new Distance(20000,Metrics.KILOMETERS),pageable));
     }
 
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/users/{id:.+}")
     public ResponseEntity<User> get(@PathVariable String id){
         return userRepository.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }

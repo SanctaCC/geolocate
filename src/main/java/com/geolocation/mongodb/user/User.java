@@ -1,5 +1,6 @@
 package com.geolocation.mongodb.user;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -32,6 +33,7 @@ public class User {
     private Point location;
 
     @LastModifiedDate
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private Date editedDate;
 
 }

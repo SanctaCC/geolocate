@@ -3,22 +3,22 @@ package com.geolocation.mongodb;
 import com.geolocation.mongodb.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-
-import java.util.concurrent.ThreadLocalRandom;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @SpringBootApplication
 @EnableMongoAuditing
 @EnableFeignClients
 @EnableAsync
+@EnableWebMvc
+//@EnableReactiveMongoRepositories
+//@EnableMongoRepositories
 public class Application implements CommandLineRunner {
 
 	public static void main(String[] args) {
@@ -54,5 +54,5 @@ public class Application implements CommandLineRunner {
 //        }
 //
 
-	}
+    }
 }
