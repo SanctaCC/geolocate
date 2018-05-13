@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("dev")
-public class UserRepositoryIntegrationTest {
+public class ITUserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;

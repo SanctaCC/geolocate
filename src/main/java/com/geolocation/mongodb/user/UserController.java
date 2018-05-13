@@ -14,9 +14,11 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.stream.Stream;
@@ -54,6 +56,12 @@ public class UserController {
 //                .buildAndExpand(user.getIpAddress()).toUri();
 //        return ResponseEntity.created(uri).body(user);
 //    }
+
+    @RequestMapping("/**")
+    public void noHandler(HttpServletRequest req) throws NoHandlerFoundException {
+        throw new NoHandlerFoundException(req.getMethod(),req.getRequestURL().toString(),
+                new ServletServerHttpRequest(req).getHeaders());
+    }
 
     @GetMapping("/users")
     public ResponseEntity<Page<User>> get(@QuerydslPredicate(root = User.class) Predicate predicate,
