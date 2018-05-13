@@ -42,7 +42,7 @@ class UserInterceptor implements HandlerInterceptor{
         if(u.getLocation()==null) {
             u.setLocation(lp.getOne(ip));
             u = userRepository.save(u);
-            log.info("New user: {}",ip);
+            log.info("New user: {}, location: {}",ip,u.getLocation());
         }else {
             CompletableFuture<User> future =
                     userRepository.asyncSave(u);

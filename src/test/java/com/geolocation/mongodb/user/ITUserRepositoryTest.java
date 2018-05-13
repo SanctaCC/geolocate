@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("dev")
+@ActiveProfiles("prod")
 public class ITUserRepositoryTest {
 
     @Autowired

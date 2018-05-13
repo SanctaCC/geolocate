@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Profile("prod")
 @Service
-class IpInfoLocationProvider implements LocationProvider {
+public class IpInfoLocationProvider implements LocationProvider {
 
     public IpInfoLocationProvider(IpInfoApiService apiService) {
         this.apiService = apiService;
