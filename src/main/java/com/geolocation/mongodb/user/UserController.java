@@ -2,6 +2,7 @@ package com.geolocation.mongodb.user;
 
 import com.geolocation.mongodb.location.LocationProvider;
 import com.geolocation.mongodb.user.repository.UserRepository;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -38,7 +39,7 @@ public class UserController {
 
     private Point getCurrentPoint() {
         Point point= (Point) RequestContextHolder.getRequestAttributes()
-                        .getAttribute("location", RequestAttributes.SCOPE_REQUEST);
+                .getAttribute("location", RequestAttributes.SCOPE_REQUEST);
         return point;
     }
 
@@ -56,8 +57,8 @@ public class UserController {
 
     @GetMapping("/users")
     public ResponseEntity<Page<User>> get(@QuerydslPredicate(root = User.class) Predicate predicate,
-                                          @PageableDefault(sort={"date"},direction = Sort.Direction.DESC) Pageable pageable,
-                                          @ModelAttribute User user){
+                                          @PageableDefault(sort={"editedDate"},direction = Sort.Direction.DESC) Pageable pageable){
+        predicate = (predicate==null)? new BooleanBuilder():predicate;
         return new ResponseEntity<>(userRepository.findAll(predicate,pageable), HttpStatus.OK);
     }
 
@@ -92,7 +93,7 @@ public class UserController {
     @GetMapping("test")
     public Point test(HttpServletRequest req/*,@RequestAttribute("location") Point point*/ ){
         boolean prod=
-        Stream.of(env.getActiveProfiles()).filter(p-> "prod".equals(p)).findAny().isPresent();
+        Stream.of(env.getActiveProfiles()).anyMatch(p-> "prod".equals(p));
         if(prod) return lp.getOne(req.getRemoteAddr());
 
         return lp.getOne("8.8.8.8"); //dev

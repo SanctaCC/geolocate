@@ -1,4 +1,4 @@
-//package com.geolocation.mongodb.user;
+package com.geolocation.mongodb.user;
 //
 //import com.geolocation.mongodb.user.repository.ReactiveUserRepository;
 //import org.springframework.context.annotation.Bean;
@@ -21,7 +21,7 @@
 ////@RestController
 ////@RequestMapping("/rx")
 //@Configuration
-//public class UserReactiveController {}
+public class UserReactiveController {}
 //
 //    private final ReactiveUserRepository reactiveUserRepository;
 //
