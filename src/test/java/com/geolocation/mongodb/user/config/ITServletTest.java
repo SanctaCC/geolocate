@@ -1,6 +1,6 @@
 package com.geolocation.mongodb.user.config;
 
-import com.geolocation.mongodb.location.IpInfo.IpInfoLocationProvider;
+import com.geolocation.mongodb.location.LocationProvider;
 import com.geolocation.mongodb.user.UserController;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.geo.Point;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
@@ -27,15 +26,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("prod")
 public class ITServletTest {
 
     @Autowired
     WebApplicationContext applicationContext;
 
-    //IpLocationProvider uses external api to provide location and needs Internet connection
-    //for IT purposes lets just return some arbitrary point
-    @MockBean private IpInfoLocationProvider ipInfoLocationProvider;
+    @MockBean private LocationProvider locationProvider;
 
     MockMvc mockMvc;
 
@@ -44,7 +40,7 @@ public class ITServletTest {
     @Before
     public void before(){
         mockMvc = MockMvcBuilders.webAppContextSetup(applicationContext).build();
-        Mockito.when(ipInfoLocationProvider.getOne("8.8.8.8")).thenReturn(point);
+        Mockito.when(locationProvider.getOne("8.8.8.8")).thenReturn(point);
     }
 
 
@@ -57,12 +53,11 @@ public class ITServletTest {
         mockMvc.perform(get("/any-url").with(getRequestPostProcessor()))
                 .andExpect(request().attribute("location",point));
 
-        Mockito.verify(ipInfoLocationProvider,times(1)).getOne("8.8.8.8");
+        Mockito.verify(locationProvider,times(1)).getOne("8.8.8.8");
     }
 
     @Test
     public void everythingReturnsIndexHtml() throws Exception {
-//        RequestPostProcessor requestPostProcessor = getRequestPostProcessor();
 
         mockMvc.perform(get("/").with(getRequestPostProcessor()))
                 .andExpect(status().is3xxRedirection()).andDo(print())

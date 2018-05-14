@@ -1,5 +1,6 @@
 package com.geolocation.mongodb.user;
 
+import com.geolocation.mongodb.location.LocationProvider;
 import com.geolocation.mongodb.user.repository.UserRepository;
 import com.querydsl.core.types.Predicate;
 import org.junit.Before;
@@ -7,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.data.geo.Point;
@@ -15,7 +17,6 @@ import org.springframework.data.querydsl.SimpleEntityPathResolver;
 import org.springframework.data.querydsl.binding.QuerydslBindingsFactory;
 import org.springframework.data.querydsl.binding.QuerydslPredicateBuilder;
 import org.springframework.data.util.ClassTypeInformation;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Assert;
 import org.springframework.util.LinkedMultiValueMap;
@@ -27,7 +28,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("prod")
 public class ITUserRepositoryTest {
 
     @Autowired
@@ -37,6 +37,9 @@ public class ITUserRepositoryTest {
 
     @Autowired
     private ApplicationContext context;
+
+    @MockBean
+    LocationProvider locationProvider;
 
     @Before
     public void setUp() {
