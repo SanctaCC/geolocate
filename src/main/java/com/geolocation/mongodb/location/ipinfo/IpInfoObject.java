@@ -1,4 +1,4 @@
-package com.geolocation.mongodb.location.IpInfo;
+package com.geolocation.mongodb.location.ipinfo;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

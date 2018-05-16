@@ -1,22 +1,20 @@
-package com.geolocation.mongodb.location.MaxMind;
+package com.geolocation.mongodb.location.maxmind;
 
 import com.geolocation.mongodb.location.LocationProvider;
+import com.geolocation.mongodb.location.LocationService;
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.model.CityResponse;
 import com.maxmind.geoip2.record.Location;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.geo.Point;
-import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 
-@Service
-@Profile("dev")
+@LocationService
 @Slf4j
 public class MaxMindLocationProvider implements LocationProvider{
 
@@ -26,15 +24,11 @@ public class MaxMindLocationProvider implements LocationProvider{
 
     DatabaseReader reader;
 
-    public MaxMindLocationProvider(@Value("${maxmind.path}") String dbPath){
+    public MaxMindLocationProvider(@Value("${maxmind.path}") String dbPath) throws IOException {
         this.dbPath = dbPath;
         Assert.hasText(dbPath,"Max Mind path not specified");
         dbFile = new File(dbPath);
-        try {
-            reader = new DatabaseReader.Builder(dbFile).build();
-        } catch (IOException e) {
-            log.error("exception caught in "+getClass(),e);
-        }
+        reader = new DatabaseReader.Builder(dbFile).build();
     }
 
     @Override
@@ -49,8 +43,7 @@ public class MaxMindLocationProvider implements LocationProvider{
             y = (location.getLatitude());
 
         } catch (Exception e) {
-            log.error("exception caught in "+getClass(),e);
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
         return new Point(x,y);
     }

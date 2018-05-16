@@ -1,4 +1,4 @@
-package com.geolocation.mongodb.location.IpInfo;
+package com.geolocation.mongodb.location.ipinfo;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;

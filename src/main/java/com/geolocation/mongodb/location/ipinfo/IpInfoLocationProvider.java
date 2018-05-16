@@ -1,12 +1,11 @@
-package com.geolocation.mongodb.location.IpInfo;
+package com.geolocation.mongodb.location.ipinfo;
 
 import com.geolocation.mongodb.location.LocationProvider;
-import org.springframework.context.annotation.Profile;
+import com.geolocation.mongodb.location.LocationService;
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 
-@Profile("prod")
-@Service
+@LocationService
 public class IpInfoLocationProvider implements LocationProvider {
 
     public IpInfoLocationProvider(IpInfoApiService apiService) {
