@@ -43,7 +43,8 @@ public class MaxMindLocationProvider implements LocationProvider{
             y = (location.getLatitude());
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.warn("MaxMind exception:{}",e.getMessage());
+            return null;
         }
         return new Point(x,y);
     }
